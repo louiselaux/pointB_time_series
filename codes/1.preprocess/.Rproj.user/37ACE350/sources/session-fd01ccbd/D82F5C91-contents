@@ -1,0 +1,89 @@
+
+#Load the dataset
+load(file="output/env_mean.Rdata")
+
+
+#Pivot it here
+env_mean_pivot <- env_mean %>%pivot_wider(names_from = "name", values_from="value" )
+env_mean_pivot<- as.data.frame(env_mean_pivot)
+
+env_mean_pivot%>%ggplot()+geom_point(aes(x=date,y=T))
+
+#First step: Regularization
+
+# define a 2 weeks regular date grid
+ref <- tibble(
+  target_date=seq(from=as.Date("1967-01-05"), to=as.Date("2022-12-31"), by=14),
+  year=year(target_date)
+)
+
+#Start in 1992
+ref<- ref%>% filter(target_date>"1992-01-16")
+
+# Identify years in which the number of obs is larger than usual
+pbs <- ref %>%
+  count(year) %>%
+  filter(n>26)
+
+# ->this is often an extra date in very late decembre => just remove it
+ref <- filter(ref, !(year %in% pbs$year & yday(target_date) > 360))
+ref %>%
+  count(year) %>%
+  filter(n>26)
+# -> all OK
+
+# Match data based on these reference dates
+avail_dates <- unique(env_mean$date)
+ref <- ref %>%
+  mutate(
+    closest_date = castr::closest(ref$target_date, avail_dates),
+    date_diff = abs(closest_date - target_date) %>% as.numeric()
+  )
+
+# Insert the data based on the matched dates
+table_reg <- left_join(ref, env_mean, by=c("closest_date"="date"), relationship="many-to-many")
+
+# Erase data for matches that are too far from the target
+table_reg<- table_reg %>%
+  mutate(value = if_else(date_diff > 6, NA, value))
+
+ggplot(table_reg) + facet_wrap(~name, scales="free_y") +
+  geom_point(aes(x=target_date, y=value), size=0.2) + theme_bw()+labs(x="date", y="value")
+# -> OK
+
+#Remove outliers
+t<-table_reg%>%pivot_wider(names_from = "name", values_from="value")
+hist(t$CHLA)
+hist(t$NO3)
+hist(t$S)
+hist(t$T)
+hist(t$SIOH4)
+
+t<- t%>%mutate(CHLA=mask_extreme(CHLA, percent=c(0,0.5)),
+               S=mask_extreme(S, percent=c(0.2,0)))
+
+
+hist(t$CHLA)
+
+#Interpolate
+
+#Linear interpolation in order not to have NA
+
+interpolate_column_env <- function(column) {
+  approx(x = t$target_date, y = column, xout = t$target_date, method = "linear", rule=1)$y
+}
+
+env_var<- t%>% select(-target_date,-year,-closest_date,-date_diff)
+# For all columns
+interpolated_val_env <- lapply(env_var, interpolate_column_env)
+
+# Convert to a dataframe
+interpolated_valuess_env <- as.data.frame(interpolated_val_env)
+
+# Rename them
+colnames(interpolated_valuess_env) <- colnames(env_var)
+
+envv_for_ccm <- interpolated_valuess_env%>% mutate(date= t$target_date,
+                                                   year=t$year)
+
+save(envv_for_ccm, file="envv_for_ccm.Rdata")

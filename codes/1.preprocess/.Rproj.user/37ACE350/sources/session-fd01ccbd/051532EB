@@ -1,0 +1,26 @@
+{
+    "id": "051532EB",
+    "path": "~/Documents/github/codes/1.preprocess/1.read_and_reformat_env_data.R",
+    "project_path": "1.read_and_reformat_env_data.R",
+    "type": "r_source",
+    "hash": "2330735794",
+    "contents": "",
+    "dirty": false,
+    "created": 1742390727034.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "73,0",
+        "scrollLine": "67"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1742391448,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1742391448537,
+    "read_only": false,
+    "read_only_alternatives": []
+}
