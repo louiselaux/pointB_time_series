@@ -13,14 +13,14 @@ load(file="output/stats_env.Rdata")
 
 #Inspection plot when depth is 1 meter
 dl%>%filter(depth=="1")%>%filter(date>"1967-01-01")%>%filter(name%in%c("CHLA","T","S","O","NO2","NO3","Sigma","COP","NOP","PO4","SIOH4"))%>%ggplot() + facet_wrap(~name, scales="free_y") +
-  geom_line(aes(x=date, y=value), size=0.2)+  theme_bw() +  
+  geom_line(aes(x=date, y=value), size=0.2)+  theme_bw() +
   theme(
-    axis.title = element_text(size = 14),        
-    axis.text = element_text(size = 12),         
-    strip.text = element_text(size = 16),        
-    legend.title = element_text(size = 14),      
-    legend.text = element_text(size = 12),       
-    plot.title = element_text(size = 18, hjust = 0.5),  
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    strip.text = element_text(size = 16),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    plot.title = element_text(size = 18, hjust = 0.5),
     axis.ticks.length = unit(0.3, "cm"),
     strip.background = element_rect(fill = "lightblue")
   ) +
@@ -29,14 +29,14 @@ dl%>%filter(depth=="1")%>%filter(date>"1967-01-01")%>%filter(name%in%c("CHLA","T
 
 #Inspection plot when taking the mean of each variable
 dl%>%group_by(date,name)%>%summarise(value=mean(value, na.rm=TRUE))%>%filter(name%in%c("CHLA","T","S","O","NO2","NO3","Sigma","COP","NOP","PO4","SIOH4"))%>%ggplot() + facet_wrap(~name, scales="free_y") +
-  geom_line(aes(x=date, y=value), size=0.2)+  theme_bw() +  
+  geom_line(aes(x=date, y=value), size=0.2)+  theme_bw() +
   theme(
-    axis.title = element_text(size = 14),        
-    axis.text = element_text(size = 12),         
-    strip.text = element_text(size = 16),        
-    legend.title = element_text(size = 14),      
-    legend.text = element_text(size = 12),      
-    plot.title = element_text(size = 18, hjust = 0.5),  
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    strip.text = element_text(size = 16),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    plot.title = element_text(size = 18, hjust = 0.5),
     axis.ticks.length = unit(0.3, "cm"),
     strip.background = element_rect(fill = "lightblue")
   ) +
@@ -56,15 +56,15 @@ ggplot() +
   ggtitle("Long term trends") +
   theme_bw() +
   theme(
-    axis.title = element_text(size = 14),        
-    axis.text = element_text(size = 12),         
-    strip.text = element_text(size = 16),        
-    legend.title = element_text(size = 14),      
-    legend.text = element_text(size = 12),      
-    plot.title = element_text(size = 18, hjust = 0.5),  
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    strip.text = element_text(size = 16),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    plot.title = element_text(size = 18, hjust = 0.5),
     axis.ticks.length = unit(0.3, "cm"),
     strip.background = element_rect(fill = "lightblue")
   )
 
-
+#add
 
